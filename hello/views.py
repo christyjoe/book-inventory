@@ -3,4 +3,4 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 def hello(request):
-    return HttpResponse("Hello, world. You're CJ's new website.")
+    return HttpResponse("Hi. Welcome to CJ's book inventory")
