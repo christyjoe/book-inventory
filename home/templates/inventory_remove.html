@@ -1,0 +1,16 @@
+{% block content %}
+	<h1>Remove book - {{ book.title }}</h1>
+	<div class="container">
+		<form method="post">
+			{% csrf_token %}
+			<div id="index_form">
+				Are you sure you want to remove the book from the inventory?
+				<p></p>
+				<div>
+					<button type="submit" name="yes" class="btn btn-outline-info">Yes</button>
+					<button type="cancel" name="cancel" class="btn btn-outline-info">Cancel</button>
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}
