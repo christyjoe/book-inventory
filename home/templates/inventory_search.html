@@ -31,7 +31,11 @@
 		  <img src="{{book.thumbnail}}">
 		{{ book.title }}
 		  <br>
-		  ({{book.count}})
+			  {% if book.showRed %}
+			  <a style="color:red;">({{book.count}})</a>
+			  {% else %}
+			  <a style="color:green;">({{book.count}})</a>
+			  {% endif %}
 			  {% if book.showAdd %}
 			  <a href="{% url 'inventoryAdd' book.google_book_id %}">add book</a>
 			  {% endif %}

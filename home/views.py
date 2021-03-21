@@ -14,7 +14,9 @@ class Inventory(generic.ListView):
 		form=SearchForm
 		books=Book.objects.all()
 		for i in books:
+			i.showRed = False
 			if i.count==0:
+				i.showRed = True
 				i.count = "Out of stock"
 		return render(request, 'inventory.html', {'book_list': books})
 
@@ -50,6 +52,7 @@ class InventorySearch(generic.TemplateView):
 			except:
 			    searchBook["thumbnail"] = '#'
 			searchBook["count"] = "Not available"
+			searchBook["showRed"] = True
 			searchBook["showAdd"] = True
 			bookIds.append(i['id'])
 			self.searchBooks.append(searchBook)
@@ -57,9 +60,11 @@ class InventorySearch(generic.TemplateView):
 			pos += 1
 		checkBooks = Book.objects.filter(google_book_id__in=bookIds)
 		for i in checkBooks:
+			self.searchBooks[booksMap[i.google_book_id]]["showRed"] = False
 			self.searchBooks[booksMap[i.google_book_id]]["showAdd"] = False
 			self.searchBooks[booksMap[i.google_book_id]]["count"] = i.count
 			if(i.count==0):
+				self.searchBooks[booksMap[i.google_book_id]]["showRed"] = True
 				self.searchBooks[booksMap[i.google_book_id]]["count"] = "Out of stock"
 
 	def get(self, request, gref):
