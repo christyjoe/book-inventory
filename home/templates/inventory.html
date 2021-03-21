@@ -3,7 +3,7 @@
 	<form method="post">
 		{% csrf_token %}
 		{{ searchform.errors }}
-	  <input name="query" type="text" placeholder="Books search">
+	  <input name="searchField" type="text" placeholder="Books search" required>
 	  <button type="submit" name="button">Search</button>
 	</form>
 <h2>Inventory</h2>
@@ -17,5 +17,5 @@
   </ul>
   {% else %}
     <p>There are no books in the library.</p>
-  {% endif %} 
+  {% endif %}
 {% endblock %}

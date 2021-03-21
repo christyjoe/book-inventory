@@ -4,8 +4,9 @@ from book.models import Book
 from django.views import generic
 from django.shortcuts import redirect
 from django.http import HttpResponse
-from .forms import CountForm, SearchForm
+from .forms import CountForm, SearchForm, AddForm
 from django import forms
+import requests
 import json
 
 class Inventory(generic.ListView):
@@ -19,46 +20,90 @@ class Inventory(generic.ListView):
 		print ('Entering in')
 		if form.is_valid():
 			print ('Exiting out')
-			searchtext = form.cleaned_data['search']
+			searchtext = form.cleaned_data['searchField']
+			return redirect('search/' + searchtext)
+
 		else:
 			print ("Printing errors")
 			print (form.errors)
-		return HttpResponse("No Books Found" ++ searchtext, status= 401)
-
-	
-	def googleBookAPI(self, searchtext):
-		googleapikey = "AIzaSyA7sWY6q7S4-xyZ1edjWtELkVa88dziU6Q"
-		parms = {"q":searchtext, 'key':googleapikey}
-		searchBooks = []
-		try:
-			r = requests.get(url="https://www.googleapis.com/books/v1/volumes?q=searchtext&key=googleapikey")
-			my_json = r.json()
-			for i in my_json["items"]:
-				searchBook = {}
-				searchBook.title = i['volumeInfo']['title']
-				searchBook.previewLink = i["volumeInfo"]["previewLink"]
-				try:
-				    searchBook.imageThumbnail = i['volumeInfo']["imageLinks"]["thumbnail"]
-				except:
-				    searchBook.imageThumbnail = '#'
-				searchBooks.append(searchBook)
-		except:
-			searchBooks = []
-		return searchBooks
-
-
-
+		return HttpResponse("No Books Found", status= 401)
 
 
 class InventorySearch(generic.TemplateView):
-	def get(Self, request, gref):
+	def googleBookAPI(self, searchtext):
+		googleapikey = "AIzaSyDgyKmKc1KTpHh8p23jnTOHd-c7LLR4ox8"
+		parms = {"q":searchtext, 'key':googleapikey}
+		r = requests.get(url="https://www.googleapis.com/books/v1/volumes", params=parms)
+		my_json = r.json()
+		bookIds = []
+		pos = 0
+		booksMap = {}
+		for i in my_json["items"]:
+			searchBook = {}
+			searchBook["title"] = i['volumeInfo']["title"]
+			searchBook["google_book_id"] = i['id']
+			try:
+			    searchBook["thumbnail"] = i['volumeInfo']["imageLinks"]["thumbnail"]
+			except:
+			    searchBook["thumbnail"] = '#'
+			searchBook["count"] = "Not available"
+			bookIds.append(i['id'])
+			self.searchBooks.append(searchBook)
+			booksMap[i['id']] = pos
+			pos += 1
+		checkBooks = Book.objects.filter(google_book_id__in=bookIds)
+		for i in checkBooks:
+			self.searchBooks[booksMap[i.google_book_id]]["count"] = i.count
+
+	def get(self, request, gref):
 		# Google api
+		self.searchBooks = []
+		try:
+			self.googleBookAPI(gref)
+		except:
+			return HttpResponse("No Books Found", status= 401)
+		return render(request, 'inventory_search.html', {'book_list':self.searchBooks})
+
+
+class InventoryAdd(generic.TemplateView):
+
+	def __init__(self):
+		self.addBook = {}
+
+	def fetchBook(self, gid):
+		r = requests.get(url="https://www.googleapis.com/books/v1/volumes/" + gid)
+		my_json = r.json()
+		if(my_json):
+			self.addBook["title"] = my_json['volumeInfo']["title"]
+			self.addBook["google_book_id"] = my_json['id']
+			try:
+				self.addBook["thumbnail"] = my_json['volumeInfo']["imageLinks"]["thumbnail"]
+			except:
+				self.addBook["thumbnail"] = '#'
+
+	def get(self, request, gid):
+		self.fetchBook(gid)
+		form=AddForm
+		return render(request, 'inventory_add.html', {'form':form, 'book':self.addBook})
+
+	def post(self, request, gid):
+		form = AddForm(request.POST)
+		self.fetchBook(gid)
+		if form.is_valid():
+			count=form.cleaned_data['count']
+			if (count<1 or 9999<count):
+				raise forms.ValidationError("Invalid stock. Please check ")
+			book = Book()
+			book.title = self.addBook['title']
+			book.count = count
+			book.google_book_id = self.addBook['google_book_id']
+			book.thumbnail = self.addBook['thumbnail']
+			book.save()
 		return redirect('home')
 
 
-
 class InventoryUpdate(generic.TemplateView):
-	def get(Self, request, id):
+	def get(self, request, id):
 		book=Book.objects.get(pk=id)
 		form=CountForm
 		return render(request, 'inventory_update.html', {'form':form, 'book':book})
@@ -76,7 +121,7 @@ class InventoryUpdate(generic.TemplateView):
 
 
 class InventoryRemove(generic.TemplateView):
-	def get(Self, request, id):
+	def get(self, request, id):
 		book=Book.objects.get(pk=id)
 		return render(request, 'inventory_remove.html', {'book':book})
 
