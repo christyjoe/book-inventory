@@ -1,1 +1,1 @@
-# book-inventory
+# Book Inventory
