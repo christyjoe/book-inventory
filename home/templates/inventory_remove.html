@@ -1,6 +1,7 @@
 {% block content %}
 	<h1>Remove book - {{ book.title }}</h1>
 	<div class="container">
+		<img src="{{book.thumbnail}}">
 		<form method="post">
 			{% csrf_token %}
 			<div id="index_form">

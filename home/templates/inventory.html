@@ -12,7 +12,7 @@
     {% for book in book_list %}
       <li>
 		  <img src="{{book.thumbnail}}">
-        {{book.id}}. {{ book.title }} ({{book.count}}) -    <a href="{% url 'inventoryUpdate' book.id %}">update</a> | <a href="{% url 'inventoryRemove' book.id %}">remove</a>
+        {{ book.title }} ({{book.count}}) -    <a href="{% url 'inventoryUpdate' book.id %}">update</a> | <a href="{% url 'inventoryRemove' book.id %}">remove</a>
       </li>
     {% endfor %}
   </ul>

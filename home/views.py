@@ -13,6 +13,9 @@ class Inventory(generic.ListView):
 	def get(self, request):
 		form=SearchForm
 		books=Book.objects.all()
+		for i in books:
+			if i.count==0:
+				i.count = "Out of stock"
 		return render(request, 'inventory.html', {'book_list': books})
 
 	def post(self, request):
@@ -47,16 +50,19 @@ class InventorySearch(generic.TemplateView):
 			except:
 			    searchBook["thumbnail"] = '#'
 			searchBook["count"] = "Not available"
+			searchBook["showAdd"] = True
 			bookIds.append(i['id'])
 			self.searchBooks.append(searchBook)
 			booksMap[i['id']] = pos
 			pos += 1
 		checkBooks = Book.objects.filter(google_book_id__in=bookIds)
 		for i in checkBooks:
+			self.searchBooks[booksMap[i.google_book_id]]["showAdd"] = False
 			self.searchBooks[booksMap[i.google_book_id]]["count"] = i.count
+			if(i.count==0):
+				self.searchBooks[booksMap[i.google_book_id]]["count"] = "Out of stock"
 
 	def get(self, request, gref):
-		# Google api
 		self.searchBooks = []
 		try:
 			self.googleBookAPI(gref)
@@ -91,7 +97,7 @@ class InventoryAdd(generic.TemplateView):
 		self.fetchBook(gid)
 		if form.is_valid():
 			count=form.cleaned_data['count']
-			if (count<1 or 9999<count):
+			if (count<0 or 9999<count):
 				raise forms.ValidationError("Invalid stock. Please check ")
 			book = Book()
 			book.title = self.addBook['title']
@@ -112,7 +118,7 @@ class InventoryUpdate(generic.TemplateView):
 		form= CountForm(request.POST)
 		if form.is_valid():
 			count=form.cleaned_data['count']
-			if (count<1 or 9999<count):
+			if (count<0 or 9999<count):
 				raise forms.ValidationError("Invalid stock. Please check ")
 			book=Book.objects.get(pk=id)
 			book.count = count

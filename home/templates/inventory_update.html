@@ -1,12 +1,13 @@
 {% block content %}
 	<h1>Inventory Update - {{ book.title }}</h1>
 	<div class="container">
+		<img src="{{book.thumbnail}}">
 		<form method="post">
 			{% csrf_token %}
 			{{ form.errors }}
 			<div id="index_form">
 				{{ form.as_p }}
-				<span style='font-size:12px;'>*Enter a valid number between 1 and 9999</span>
+				<span style='font-size:12px;'>*Enter a valid number of items between 0 and 9999</span>
 				<p></p>
 				<div>
 					<button type="submit" class="btn btn-outline-info">submit</button>
