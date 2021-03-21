@@ -1,22 +1,29 @@
 # book-inventory
+Home Page: https://guarded-wave-97929.herokuapp.com/home/
+
 Features:
 
-View number of books avaialble in stock.
-Update the stock of books.
-Remove a book from the inventory.
-Search for any book using Google Books Api.
-Add a new book to the inventory.
+1. View number of books available in stock.
+2. Update the stock of books.
+3. Remove a book from the inventory.
+4. Search for any book using Google Books API.
+5. Add a new book to the inventory.
+
+
 Assumptions:
 
-If the stock a book reduces to 0, it wont be removed, instead will be marked as Out Of Stock.
-Maximum stock a book cant exceed 9999.
-Cant add a book stock directly from search. Stock can be changed only from home page.
-Google Books Api is limited to 10 books per search.
+1. If the stock a book goes to 0, it is considered to be "Out Of Stock".
+2. Maximum stock a book cant exceed 9999.
+3. Wouldn't be able to update a book stock of available book using search.
+
+
 Implementation:
 
-Django framework in Python3
-SQLlite for database
-Deployed in Heroku server
+1. Django framework in Python3
+2. SQLlite for database
+3. Deployed in Heroku server
+
+
 Running instructions:
 
 git clone
@@ -24,6 +31,7 @@ pip install -r requirements.txt
 python3 manage.py makemigrations book
 python3 manage.py migrate
 python3 manage.py runserver 8080
-Local Home Page: http://127.0.0.1:8080/home/
 
-Heroku Home Page: https://guarded-wave-97929.herokuapp.com/home/
+Note: Google Books API is limited to 10 books per search.
+
+Served locally at http://127.0.0.1:8080/home/
