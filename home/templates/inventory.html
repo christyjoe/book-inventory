@@ -1,5 +1,12 @@
 {% block content %}
-  <h1>Book Inventory</h1>
+  <h1 style="text-align:center;">Spoonshot Library</h1>
+	<form method="post">
+		{% csrf_token %}
+		{{ searchform.errors }}
+	  <input name="query" type="text" placeholder="Books search">
+	  <button type="submit" name="button">Search</button>
+	</form>
+<h2>Inventory</h2>
   {% if book_list %}
   <ul>
     {% for book in book_list %}
