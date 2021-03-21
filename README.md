@@ -25,12 +25,11 @@ Implementation:
 
 
 Running instructions:
-
-git clone
-pip install -r requirements.txt
-python3 manage.py makemigrations book
-python3 manage.py migrate
-python3 manage.py runserver 8080
+  git clone
+  pip install -r requirements.txt
+  python3 manage.py makemigrations book
+  python3 manage.py migrate
+  python3 manage.py runserver 8080
 
 Note: Google Books API is limited to 10 books per search.
 
