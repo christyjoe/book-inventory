@@ -1,19 +1,45 @@
 {% block content %}
-  <h1>Book List</h1>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+
+    li {
+      /* height: 200px; */
+      width: 120px;
+      margin: 5px;
+      padding: 10px;
+      margin-bottom: 20px;
+      position: relative;
+      text-align: center;
+
+    }
+
+    li img {
+      height: 180px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;">Book Search</h1>
   {% if book_list %}
-  <ul>
+  <ul style="display: flex; flex-direction: row; list-style: none; margin-top: 20px;flex-wrap:wrap; padding: 20px; padding-top: 0px;">
     {% for book in book_list %}
       <li>
-		  <p>
-        {{ book.title }} ({{book.count}})  
+		  <img src="{{book.thumbnail}}">
+		{{ book.title }}
+		  <br>
+		  ({{book.count}})
 			  {% if book.showAdd %}
 			  <a href="{% url 'inventoryAdd' book.google_book_id %}">add book</a>
 			  {% endif %}
-	  	  </p>
       </li>
     {% endfor %}
   </ul>
   {% else %}
     <p>There are no books in the library.</p>
   {% endif %}
+</body>
 {% endblock %}

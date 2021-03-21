@@ -1,13 +1,14 @@
 {% block content %}
-	<h1>Inventory Add New Book - {{ book.title }}</h1>
-	<div class="container">
+	<h1 style="text-align:center;">Add New Book</h1>
+	<div class="container" style="padding-left: 20px">
+		<h3>{{ book.title }}</h3>
 		<img src="{{book.thumbnail}}">
 		<form method="post">
 			{% csrf_token %}
 			{{ form.errors }}
 			<div id="index_form">
 				{{ form.as_p }}
-				<span style='font-size:12px;'>*Enter a valid number of items between 0 and 9999</span>
+				<span style='font-size:14px;'>*Enter a valid number of items between 0 and 9999</span>
 				<p></p>
 				<div>
 					<button type="submit" class="btn btn-outline-info">submit</button>

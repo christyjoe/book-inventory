@@ -1,22 +1,53 @@
 {% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+
+    li {
+      /* height: 200px; */
+      width: 120px;
+      margin: 5px;
+      padding: 10px;
+      margin-bottom: 20px;
+      position: relative;
+      text-align: center;
+
+    }
+
+    li img {
+      height: 180px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
   <h1 style="text-align:center;">Spoonshot Library</h1>
-	<form method="post">
+	<form method="post" style="padding-left: 20px;">
 		{% csrf_token %}
 		{{ searchform.errors }}
 	  <input name="searchField" type="text" placeholder="Books search" required>
 	  <button type="submit" name="button">Search</button>
 	</form>
-<h2>Inventory</h2>
+	
+<h2 style="padding-left: 20px;">Inventory</h2>
   {% if book_list %}
-  <ul>
+  <ul style="display: flex; flex-direction: row; list-style: none; margin-top: 20px;flex-wrap:wrap; padding: 20px; padding-top: 0px;">
     {% for book in book_list %}
       <li>
 		  <img src="{{book.thumbnail}}">
-        {{ book.title }} ({{book.count}}) -    <a href="{% url 'inventoryUpdate' book.id %}">update</a> | <a href="{% url 'inventoryRemove' book.id %}">remove</a>
+        {{ book.title }} 
+		  <br>
+		  ({{book.count}})
+		  <br>
+		  <a href="{% url 'inventoryUpdate' book.id %}">update</a> | <a href="{% url 'inventoryRemove' book.id %}">remove</a>
       </li>
     {% endfor %}
   </ul>
   {% else %}
     <p>There are no books in the library.</p>
   {% endif %}
+</body>
 {% endblock %}
